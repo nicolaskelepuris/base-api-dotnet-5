@@ -21,7 +21,7 @@ namespace Application.Requests.Users
         public PostUserRequestValidator(UserManager<AppUser> userManager)
         {
             RuleFor(p => p.Name).NotEmpty();
-            RuleFor(p => p.Name).Must(name => !name.Any(c => !Char.IsLetter(c) && !Char.IsWhiteSpace(c)));
+            RuleFor(p => p.Name).Must(name => AllCharactersAreLetterOrWhiteSpace(name));
 
             RuleFor(p => p.Password).NotEmpty();
             var passwordValidator = new PasswordValidator<AppUser>();
@@ -36,6 +36,10 @@ namespace Application.Requests.Users
                 .Must(email => userManager.FindByEmailAsync(email).Result == null)
                 .WithMessage("Email ja cadastrado")
                 .When(p => !string.IsNullOrEmpty(p.Email));
+        }
+
+        private bool AllCharactersAreLetterOrWhiteSpace(string text) {
+            return !text.Any(c => !Char.IsLetter(c) && !Char.IsWhiteSpace(c));
         }
     }
 }
