@@ -27,7 +27,10 @@ namespace Api
 
             services.AddControllers();
 
-            services.AddDbContext<AppIdentityDbContext>(x => x.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<AppIdentityDbContext>(x => x.UseSqlServer(
+                _configuration.GetConnectionString("DefaultConnection"),
+                o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
+            ));
 
             services.AddAutoMapper(typeof(MappingProfiles));
 
