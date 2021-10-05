@@ -1,5 +1,5 @@
+using System.Linq;
 using Application.Responses;
-using Application.Responses.Errors;
 using Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,10 +17,18 @@ namespace Api.Extensions
             {
                 options.InvalidModelStateResponseFactory = actionContext =>
                 {
+                    var errorMessage = actionContext.ModelState
+                        .Where(m => m.Value.Errors.Any())
+                        .SelectMany(m => m.Value.Errors.Select(e => e.ErrorMessage))
+                        .Aggregate("", (current, value) => current + value + "; ");
+
+                    errorMessage = errorMessage.Remove(errorMessage.Length - 2);
+
                     var errorResponse = new ApiResponse<string>
                     {
                         Success = false,
-                        Error = new ErrorResponse(statusCode: 400)
+                        Data = null,
+                        Error = errorMessage
                     };
 
                     return new BadRequestObjectResult(errorResponse);

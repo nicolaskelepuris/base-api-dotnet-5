@@ -2,7 +2,6 @@ using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Application.Responses;
-using Application.Responses.Errors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -37,12 +36,12 @@ namespace Api.Middlewares
                     ? new ApiResponse<string>()
                     {
                         Success = false,
-                        Error = new ErrorResponse(message: ex.Message)
+                        Error = ex.Message
                     }
                     : new ApiResponse<string>()
                     {
                         Success = false,
-                        Error = new ErrorResponse(message: "Internal Server Error")
+                        Error = "Internal Server Error"
                     };
 
 

@@ -1,5 +1,4 @@
 using Application.Responses;
-using Application.Responses.Errors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
@@ -10,12 +9,25 @@ namespace Api.Controllers
     {
         public IActionResult Error(int statusCode)
         {
-            return new ObjectResult(new ApiResponse<string>
+            return StatusCode(statusCode, new ApiResponse<string>
             {
                 Success = false,
                 Data = null,
-                Error = new ErrorResponse(statusCode)
+                Error = GetDefaultMessageForStatusCode(statusCode)
             });
+        }
+
+        private string GetDefaultMessageForStatusCode(int statusCode)
+        {
+            return statusCode switch
+            {
+                400 => "Bad request",
+                401 => "Not authorized",
+                403 => "Forbidden",
+                404 => "No content found",
+                500 => "Internal error",
+                _ => null
+            };
         }
     }
 }

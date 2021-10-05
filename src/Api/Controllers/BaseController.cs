@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using Application.Responses;
 using Application.Responses.Base;
-using Application.Responses.Errors;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,7 +29,7 @@ namespace Api.Controllers
             {
                 Success = !hasError,
                 Data = hasError ? null : data,
-                Error = hasError ? new ErrorResponse(statusCode, data.ErrorMessage) : null
+                Error = hasError ? data.ErrorMessage : null
             });
         }
     }
