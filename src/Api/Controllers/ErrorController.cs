@@ -9,12 +9,9 @@ namespace Api.Controllers
     {
         public IActionResult Error(int statusCode)
         {
-            return StatusCode(statusCode, new ApiResponse<string>
-            {
-                Success = false,
-                Data = null,
-                Error = GetDefaultMessageForStatusCode(statusCode)
-            });
+            var response = new ApiResponse<string>(data: null, error: GetDefaultMessageForStatusCode(statusCode));
+            
+            return StatusCode(statusCode, response);
         }
 
         private string GetDefaultMessageForStatusCode(int statusCode)

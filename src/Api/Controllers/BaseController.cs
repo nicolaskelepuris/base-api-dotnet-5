@@ -25,12 +25,9 @@ namespace Api.Controllers
 
             var hasError = !String.IsNullOrEmpty(data.ErrorMessage);
 
-            return StatusCode(statusCode, new ApiResponse<T>
-            {
-                Success = !hasError,
-                Data = hasError ? null : data,
-                Error = hasError ? data.ErrorMessage : null
-            });
+            var dataToReturn = hasError ? null : data;
+
+            return StatusCode(statusCode, new ApiResponse<T>(data: dataToReturn, error: data.ErrorMessage));
         }
     }
 }

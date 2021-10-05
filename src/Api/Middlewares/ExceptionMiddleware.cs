@@ -33,18 +33,8 @@ namespace Api.Middlewares
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
                 var response = _env.IsDevelopment()
-                    ? new ApiResponse<string>()
-                    {
-                        Success = false,
-                        Error = ex.Message
-                    }
-                    : new ApiResponse<string>()
-                    {
-                        Success = false,
-                        Error = "Internal Server Error"
-                    };
-
-
+                    ? new ApiResponse<string>(data: null, error: ex.Message)
+                    : new ApiResponse<string>(data: null, error: "Internal Server Error");
 
                 var options = new JsonSerializerOptions
                 {

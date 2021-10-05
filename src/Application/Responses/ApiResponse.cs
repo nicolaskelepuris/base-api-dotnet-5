@@ -1,9 +1,15 @@
 namespace Application.Responses
 {
-    public class ApiResponse<T>
+  public class ApiResponse<T>
+  {
+    public ApiResponse(T data, string error)
     {
-        public bool Success { get; set; }
-        public T Data { get; set; }
-        public string Error { get; set; }
+      Data = data;
+      Error = error;
     }
+
+    public bool Success => string.IsNullOrWhiteSpace(Error) && Data != null;
+    public T Data { get; private set; }
+    public string Error { get; private set; }
+  }
 }

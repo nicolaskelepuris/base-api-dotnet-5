@@ -24,12 +24,7 @@ namespace Api.Extensions
 
                     errorMessage = errorMessage.Remove(errorMessage.Length - 2);
 
-                    var errorResponse = new ApiResponse<string>
-                    {
-                        Success = false,
-                        Data = null,
-                        Error = errorMessage
-                    };
+                    var errorResponse = new ApiResponse<string>(data: null, error: errorMessage);
 
                     return new BadRequestObjectResult(errorResponse);
                 };
