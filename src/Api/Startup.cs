@@ -25,7 +25,7 @@ namespace Api
 
             services.AddControllers();
 
-            services.AddEntityFrameworkNpgsql().AddDbContext<AppIdentityDbContext>(x => x.UseNpgsql(_configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<AppIdentityDbContext>(x => x.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
 
             services.AddAutoMapper(typeof(MappingProfiles));
 
