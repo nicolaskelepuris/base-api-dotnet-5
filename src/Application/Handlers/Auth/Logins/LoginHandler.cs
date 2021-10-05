@@ -33,7 +33,7 @@ namespace Application.Handlers.Auth.Logins
 
             if (user == null)
             {
-                return new LoginResponse() { StatusCode = 200, ErrorMessage = "Usuario não encontrado" };
+                return (LoginResponse) LoginResponse.WithError(statusCode: 200, error: "Usuario não encontrado");
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, lockoutOnFailure: true);
@@ -42,11 +42,11 @@ namespace Application.Handlers.Auth.Logins
             {
                 if (result.IsLockedOut)
                 {
-                    return new LoginResponse() { StatusCode = 200, ErrorMessage = "Usuario está bloqueado por 5 minutos" };
+                    return (LoginResponse) LoginResponse.WithError(statusCode: 200, error: "Usuario está bloqueado por 5 minutos");
                 }
                 else
                 {
-                    return new LoginResponse() { StatusCode = 200, ErrorMessage = "Usuario não encontrado" };
+                    return (LoginResponse) LoginResponse.WithError(statusCode: 200, error: "Usuario não encontrado");
                 }
             }
 

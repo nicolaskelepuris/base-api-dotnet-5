@@ -1,5 +1,3 @@
-using System;
-using System.Net.Mail;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Requests.Users;
@@ -32,7 +30,7 @@ namespace Application.Handlers.Users
 
             if (result != IdentityResult.Success)
             {
-                return new UserResponse() { StatusCode = 400, ErrorMessage = "Falha ao criar usuario" };
+                return (UserResponse) UserResponse.WithError(statusCode: 200, error: "Falha ao criar usuario");
             }
 
             return _mapper.Map<UserResponse>(user);

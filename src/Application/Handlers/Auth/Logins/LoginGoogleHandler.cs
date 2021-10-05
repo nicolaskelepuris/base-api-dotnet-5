@@ -37,12 +37,12 @@ namespace Application.Handlers.Auth.Logins
 
                 if (!payload.EmailVerified)
                 {
-                    return new LoginResponse() { StatusCode = 200, ErrorMessage = "Email nao confirmado" };
+                    return (LoginResponse) LoginResponse.WithError(statusCode: 200, error: "Email nao confirmado");
                 }
             }
             catch (Exception)
             {
-                return new LoginResponse() { StatusCode = 200, ErrorMessage = "Erro ao ler dados do usuario via Google" };
+                return (LoginResponse) LoginResponse.WithError(statusCode: 200, error: "Erro ao ler dados do usuario via Google");
             }
 
             var user = await _userManager.FindByEmailAsync(payload.Email);
@@ -64,7 +64,7 @@ namespace Application.Handlers.Auth.Logins
 
             if (!result.Succeeded)
             {
-                return new LoginResponse() { StatusCode = 200, ErrorMessage = "Erro ao criar/atualizar usuario" };
+                return (LoginResponse) LoginResponse.WithError(statusCode: 200, error: "Erro ao criar/atualizar usuario");
             }
 
 
