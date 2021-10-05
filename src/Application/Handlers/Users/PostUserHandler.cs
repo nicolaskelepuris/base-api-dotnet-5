@@ -26,76 +26,16 @@ namespace Application.Handlers.Users
 
         public async Task<UserResponse> Handle(PostUserRequest request, CancellationToken cancellationToken)
         {
-            var requestValid = await IsRequestValidAsync(request);
-
-            if (!requestValid)
-            {
-                return new UserResponse() { StatusCode = 400, ErrorMessage = "Email ou senha invalidos" };
-            }
-
             var user = _mapper.Map<AppUser>(request);
 
             var result = await _userManager.CreateAsync(user, request.Password);
 
             if (result != IdentityResult.Success)
             {
-                return new UserResponse() { StatusCode = 400, ErrorMessage = "Falha ao criar usuario no banco" };
+                return new UserResponse() { StatusCode = 400, ErrorMessage = "Falha ao criar usuario" };
             }
 
             return _mapper.Map<UserResponse>(user);
-        }
-
-        private async Task<bool> IsRequestValidAsync(PostUserRequest request)
-        {
-            return await IsEmailValidAsync(request.Email) && await IsPasswordValidAsync(request.Password);
-        }
-
-        private async Task<bool> IsPasswordValidAsync(string password)
-        {
-            if (String.IsNullOrEmpty(password))
-            {
-                return false;
-            }
-            var passwordValidator = new PasswordValidator<AppUser>();
-
-            var result = await passwordValidator.ValidateAsync(_userManager, null, password);
-
-            if (result != IdentityResult.Success)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        private async Task<bool> IsEmailValidAsync(string email)
-        {
-            if (String.IsNullOrEmpty(email))
-            {
-                return false;
-            }
-
-            try
-            {
-                var mailAddress = new MailAddress(email);
-                if (mailAddress.Address != email)
-                {
-                    return false;
-                }
-            }
-            catch (FormatException)
-            {
-                return false;
-            }
-
-            var userSameEmail = await _userManager.FindByEmailAsync(email);
-
-            if (userSameEmail != null)
-            {
-                return false;
-            }
-
-            return true;
         }
     }
 }

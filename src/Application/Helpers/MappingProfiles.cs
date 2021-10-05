@@ -19,7 +19,8 @@ namespace Application.Helpers
 
             CreateMap<GoogleJsonWebSignature.Payload, AppUser>()
                 .ForMember(p => p.EmailConfirmed, v => v.MapFrom(p => p.EmailVerified))
-                .ForMember(p => p.UserName, v => v.MapFrom(p => p.Email));
+                .ForMember(p => p.UserName, v => v.MapFrom(p => p.Email))
+                .ForMember(p => p.Name, v => v.MapFrom(p => $"{p.GivenName} {p.FamilyName}"));
 
             CreateMap<PostUserRequest, AppUser>()
                 .ForMember(p => p.UserName, v => v.MapFrom(p => p.Email));

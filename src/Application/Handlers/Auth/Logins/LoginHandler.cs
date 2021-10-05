@@ -28,10 +28,6 @@ namespace Application.Handlers.Auth.Logins
 
         public async Task<LoginResponse> Handle(LoginRequest request, CancellationToken cancellationToken)
         {
-            if (!IsRequestValid(request))
-            {
-                return new LoginResponse() { StatusCode = 400, ErrorMessage = "Email e senha são obrigatorios" };
-            }
 
             var user = await _userManager.FindByEmailAsync(request.Email);
 
@@ -60,11 +56,6 @@ namespace Application.Handlers.Auth.Logins
                 User = _mapper.Map<UserResponse>(user),
                 Token = _tokenService.CreateToken(user)
             };
-        }
-
-        private bool IsRequestValid(LoginRequest request)
-        {
-            return !String.IsNullOrEmpty(request.Email) && !String.IsNullOrEmpty(request.Password);
         }
     }
 }

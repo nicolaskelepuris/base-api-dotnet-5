@@ -29,11 +29,6 @@ namespace Application.Handlers.Auth.Logins
 
         public async Task<LoginResponse> Handle(LoginGoogleRequest request, CancellationToken cancellationToken)
         {
-            if (!IsRequestValid(request))
-            {
-                return new LoginResponse() { StatusCode = 400, ErrorMessage = "Token invalido" };
-            }
-
             GoogleJsonWebSignature.Payload payload;
 
             try
@@ -53,23 +48,23 @@ namespace Application.Handlers.Auth.Logins
             var user = await _userManager.FindByEmailAsync(payload.Email);
 
             IdentityResult result;
+            bool userExists = user != null;
 
-            if (user == null)
+            if (userExists)
+            {
+                _mapper.Map<GoogleJsonWebSignature.Payload, AppUser>(payload, user);
+                result = await _userManager.UpdateAsync(user);
+            }
+            else
             {
                 user = _mapper.Map<AppUser>(payload);
 
                 result = await _userManager.CreateAsync(user);
             }
-            else
-            {
-                _mapper.Map<GoogleJsonWebSignature.Payload, AppUser>(payload, user);
-
-                result = await _userManager.UpdateAsync(user);
-            }
 
             if (!result.Succeeded)
             {
-                return new LoginResponse() { StatusCode = 200, ErrorMessage = "Erro ao atualizar o usuario no banco" };
+                return new LoginResponse() { StatusCode = 200, ErrorMessage = "Erro ao criar/atualizar usuario" };
             }
 
 
@@ -78,11 +73,6 @@ namespace Application.Handlers.Auth.Logins
                 User = _mapper.Map<UserResponse>(user),
                 Token = _tokenService.CreateToken(user)
             };
-        }
-
-        private bool IsRequestValid(LoginGoogleRequest request)
-        {
-            return !String.IsNullOrEmpty(request.Token);
         }
     }
 }

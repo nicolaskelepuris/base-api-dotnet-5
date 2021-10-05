@@ -1,8 +1,10 @@
 using Api.Extensions;
 using Api.Middlewares;
 using Application.Helpers;
+using Application.Requests.Auth.Logins;
 using Domain.Interfaces;
 using Domain.Services;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +39,11 @@ namespace Api
 
             services.AddMediator(_configuration);
 
+            services.AddFluentValidation(fv =>
+            {
+                fv.RegisterValidatorsFromAssemblyContaining<LoginGoogleRequestValidator>();
+            });
+            
             services.AddHttpContextAccessor();
 
             services.AddApplicationServices();
